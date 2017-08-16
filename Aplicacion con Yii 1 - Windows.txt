@@ -1,0 +1,129 @@
+Aplicacion con Yii 1 - Windows
+1. Ir a la carpeta framework de yii.
+2. Editar el archivo yiic.bat, donde dice PHP_COMMAND=php.exe por PHP_COMMAND=C:\wamp\bin\php\php5.4.3\php.exe
+3. Ejecutar el siguiente comando para crear un nuevo proyecto: yiic webapp C:\wamp\www\myapp1
+4. Abrir en el navegador http://localhost/myapp1/
+5. Comprobar, por ejemplo, que si al llenar el Formulario de Contacto dejamos campos obligatorios en blanco, los mismos son validados y obtenemos el correspondiente mensaje de error.
+6. Luego de ejecutar yiic tenemos la siguiente estructura de directorios en nuestro proeycto myapp1:
+
+myapp1/
+   index.php                 archivo de entrada de la aplicación Web
+   assets/                   contiene archivos de recursos públicos
+   css/                      contiene archivos CSS
+   images/                   contiene archivos de imágenes
+   themes/                   contiene temas de la aplicación
+   protected/                contiene los archivos protegidos de la aplicación
+      yiic                   script de linea de comandos yiic
+      yiic.bat               script de linea de comandos yiic para Windows
+      commands/              contiene comandos 'yiic' personalizados
+         shell/              contiene comandos 'yiic shell' personalizados
+      components/            contiene componentes reusables
+         MainMenu.php        clase de widget 'MainMenu'
+         Identity.php        clase 'Identity' utilizada para autenticación
+         views/              contiene los archivos de vistas para los widgets
+            mainMenu.php     el archivo vista para el widget 'MainMenu'
+      config/                contiene archivos de configuración
+         console.php         configuración aplicación consola
+         main.php            configuración de la aplicación Web
+      controllers/           contiene los archivos de clase de controladores
+         SiteController.php  la clase controlador predeterminada
+      extensions/            contiene extensiones de terceros
+      messages/              contiene mensajes traducidos
+      models/                contiene archivos clase de modelos
+         LoginForm.php       el formulario modelo para la acción 'login'
+         ContactForm.php     el formulario modelo para la acción 'contact'
+      runtime/               contiene archivos temporarios generados
+      views/                 contiene archivos de vista de controladores y de diseño
+         layouts/            contiene archivos de diseño
+            main.php         el diseño default para todas las vistas
+         site/               contiene archivos vista para el controlador 'site'
+            contact.php      contiene la vista para la acción 'contact'
+            index.php        contiene la vista para la acción 'index'
+            login.php        contiene la vista para la acción 'login'
+         system/             contiene archivos de vista del sistema
+
+7. En el archivo protected/config/main.php descomentamos el urlManager para resolver URLs de la forma myapp1/controller/action o function del controller.
+Ver http://yiiframeworkespanol.blogspot.com/2012/06/flujo-de-tareas-yii.html
+8. El Modelo: http://yiiframeworkespanol.blogspot.com/2012/06/modelo-en-yii.html
+	8.1.  Yii tiene dos tipos de modelos: modelo de formulario (CFormModel) y active record (cActiveRecord). Ambos extienden de la misma clase base CModel.
+	8.2. CFormModel, representa datos de las entradas del usuario, es decir, un formulario.
+	8.3. CActiveRecord, representa una única fila de la tabla de base de datos. Es una abstracción la BD de una forma orientada a objetos.
+	8.4. El directorio dónde suelen guardarse los modelos suele ser: /myapp1/protected/models/
+9. La Vista: http://yiiframeworkespanol.blogspot.com/2012/06/vista-en-yii.html
+	9.1. El nombre de la vista es el mismo que el nombre del archivo de la vista. Por ejemplo, la vista edit se refiere a el archivo script de vista llamado /myapp1/protected/views/edit.php.
+	9.2. Un layout contiene usualmente porciones de la interfaz de usuario que son comunes a través de muchas vistas. Por ejemplo, el layout puede contener la parte de la cabecera y pie de página; y embeber dentro del layout el contenido de la vista. SE ubican en views/layouts/
+	9.3. Un widget es una instancia de la clase CWidget. Son usualmente embebidos en las vistas para generar interfaces de usuarios complejas.
+10. El Controlador: http://yiiframeworkespanol.blogspot.com/2012/06/controlador-en-yii.html
+	10.1. Un controlador es una instancia de la clase CController.
+	10.2. Imaginemos que un usuario requiere crear un nuevo producto en su sistema. La URL invocada será algo como esto:
+	http://localhost/myapp1/index.php?r=producto/create
+	Yii buscará el controlador producto, que será el archivo ProductoController.php, y dentro de éste buscará la acción create, que será una función llamada actionCreate. Yii ejecutará la acción create y presentará los datos a través de una vista.
+
+11. Conectar a una Base de Datos.
+Para hacer esto, debemos modificar nuestro archivo /protected/config/main.php en el arreglo ´components', y dentro de éste, el arreglo 'db'.
+Para conectarse a postgres:
+ 'db'=>array(
+   'connectionString' => 'pgsql:host=localhost;port=5432;dbname= mibasededatos ',
+   'username' => 'postgres',
+   'password' => 'miclave',
+   'charset' => 'utf8',
+  ),
+ Otros ejemplos: http://yiiframeworkespanol.blogspot.com/2012/06/conectar-una-base-de-datos.html
+
+12. Generación automática de código (Gii).
+ 	12.1. Yii viene con un asistente para generar el código de nuestros proyectos de manera automática. Es una herramienta web llamada Gii.
+ 	Para usar Gii, primero debemos modificar el archivo /protected/config/main.php
+ 	'modules'=>array(
+  	// uncomment the following to enable the Gii tool
+	  	
+	  'gii'=>array(
+	   'class'=>'system.gii.GiiModule',
+	   'password'=>'Especifica tu clave aquí',
+	    // If removed, Gii defaults to localhost only. Edit carefully to taste.
+	   'ipFilters'=>array('127.0.0.1','::1'),
+	  ),
+
+	12.2. Accedemos al generador a traves de: http://localhost/myapp1/index.php/gii.
+	Ingresamos la clave que hayamos especificado en nuestra configuración de Gii. En la pantalla siguiente seleccionamos la opción Model Generator. Antes, creamos una tabla tbl_user con los campos: id, username, password, email.
+
+	12.3. Colocamos tbl_user (nombre de la tabla) en Table Name y el nombre de la clase, por ejemplo User, en Model Class. Y presionamos el botón Preview. Y luego presionamos el botón Generate y se creará nuestro archivo PHP con el modelo de nuestra tabla.
+
+	12.4. Para generar el código CRUD (create, read, update, delete) vamos a la opción Crud Generator.
+	En Model Class, colocamos el nombre de la clase creada: User, y luego Enter para ver el Preview.
+	Generamos el codigo del CRUD con click en Generate.
+
+	12.5. Abrimos en el navegador http://localhost:800/myapp1/index.php/user para ver el modulo generado.
+	  
+13. Agregar modulo creado al Menu por defecto de Yii.
+	Editar el archivo protected/views/layouts/main.php
+	Buscar el div mainmenu y agregar el siguiente array
+	array('label'=>'Usuarios', 'url'=>array('/user/admin')),
+
+14. Autenticacion de usuarios y permisologias.
+	14.1. Por defecto, yii tiene usuarios temporales manuales. Esto lo puedes observar en protected/components/UserIdentity.php
+		Alli observamos, la funcion authenticate con el array de usuarios y passwords.
+	14.2. Cada controlador tiene una funcion accessRules, donde se permiten los accesos a cada accion segun los tipos de usuarios: cualquier humano (*), logueados (@), usuario especifico (admin) o segun rol 'roles'=>array('nombre de rol')
+	14.3. 
+
+
+
+
+
+
+
+
+
+------------------------------------------------------
+En Linux.
+3. /var/www/html/yii/framework/./yiic webapp /var/www/html/mi_proyecto
+
+Permisos necesarios a la carpeta y agregar tu usuario al grupo 
+sudo usermod -a -G www-data tu-usuario
+
+sudo chgrp -R www-data /var/www
+sudo chmod -R g+w /var/www
+sudo find /var/www -type d -exec chmod 2775 {} \;
+sudo find /var/www -type f -exec chmod ug+rw {} \;
+
+
+
