@@ -15,8 +15,11 @@ class UserIdentity extends CUserIdentity
 	 * against some persistent user identity storage (e.g. database).
 	 * @return boolean whether authentication succeeds.
 	 */
+	private $iduser;
+
 	public function authenticate()
 	{
+		/* Codigo Original del framework
 		$users=array(
 			// username => password
 			'demo'=>'demo',
@@ -29,5 +32,29 @@ class UserIdentity extends CUserIdentity
 		else
 			$this->errorCode=self::ERROR_NONE;
 		return !$this->errorCode;
+		*/
+		$username=strtolower($this->username);		
+
+		$user=User::model()->find('LOWER(username)=?',array($username));
+		if ($user===null){			
+			$this->errorCode=self::ERROR_USERNAME_INVALID;
+		}
+		else if(!$user->validatePassword($this->password)){			
+			$this->errorCode=self::ERROR_PASSWORD_INVALID;
+		}
+		else{			
+			print_r("Success!!!");
+			$this->iduser=$user->id;
+			$this->username=$user->username;
+			$this->errorCode=self::ERROR_NONE;			
+		}
+		return	$this->errorCode=self::ERROR_NONE;
+	}
+	/**
+	Funcion para obtener el id del usuario que inicio sesion desde UserIdentity::getId();
+	*/
+	public function getId()
+	{
+		return $this->iduser;
 	}
 }

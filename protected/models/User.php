@@ -98,4 +98,13 @@ class User extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	public function validatePassword($pass){
+		//Return true si pass ingresado es igual al password de la BD
+		return $this->hashPassword($pass)===$this->password;
+	}
+
+	public function hashPassword($pass){
+		return md5($pass);
+	}
 }
